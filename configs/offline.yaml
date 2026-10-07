@@ -1,0 +1,27 @@
+# Runs anywhere with no models: hashing embeddings + a heuristic stand-in for the LLM.
+# Use it to check the pipeline end to end (CI does). Answer-quality scores are NOT meaningful.
+name: offline
+top_k: 5
+cache_dir: null
+generate: true
+judge: true
+generator: {provider: offline, model: offline}
+judge_llm: {provider: offline, model: offline}
+
+defaults:
+  embedding: {provider: hashing, model: hashing}
+  chunking: {strategy: recursive, chunk_size: 120, overlap: 20}
+
+experiments:
+  - name: fixed-120-dense
+    chunking: {strategy: fixed, chunk_size: 120, overlap: 20}
+    retrieval: {method: dense}
+  - name: recursive-120-dense
+    retrieval: {method: dense}
+  - name: recursive-120-bm25
+    retrieval: {method: bm25}
+  - name: recursive-120-hybrid
+    retrieval: {method: hybrid}
+  - name: recursive-120-hybrid-rerank
+    retrieval: {method: hybrid}
+    rerank: {enabled: true, candidates: 10}

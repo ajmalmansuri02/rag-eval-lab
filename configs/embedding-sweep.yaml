@@ -1,0 +1,31 @@
+# Compare local embedding models (and the value of task prefixes) with everything else fixed.
+# Needs: ollama pull nomic-embed-text && ollama pull mxbai-embed-large && ollama pull all-minilm
+name: embedding-sweep
+top_k: 5
+generate: false   # retrieval metrics are what this sweep is about
+judge: false
+
+defaults:
+  chunking: {strategy: recursive, chunk_size: 120, overlap: 20}
+  retrieval: {method: dense}
+
+experiments:
+  - name: hashing-baseline
+    embedding: {provider: hashing, model: hashing}
+  - name: nomic-prefixed
+    embedding:
+      provider: ollama
+      model: nomic-embed-text
+      query_prefix: "search_query: "
+      document_prefix: "search_document: "
+  - name: nomic-no-prefix
+    embedding: {provider: ollama, model: nomic-embed-text}
+  - name: mxbai
+    embedding:
+      provider: ollama
+      model: mxbai-embed-large
+      query_prefix: "Represent this sentence for searching relevant passages: "
+  - name: minilm
+    embedding: {provider: ollama, model: all-minilm}
+  - name: bm25-reference
+    retrieval: {method: bm25}

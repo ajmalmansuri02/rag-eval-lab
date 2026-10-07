@@ -1,0 +1,39 @@
+# Quick comparison: one chunking setup, four retrieval strategies.
+# Needs: ollama pull nomic-embed-text && ollama pull qwen2.5:3b && ollama pull qwen2.5:7b
+# Runtime on a laptop CPU: a few minutes for retrieval, longer with generation + judging.
+name: quick
+corpus_dir: data/corpus
+golden_set: data/golden/qa.yaml
+output_dir: results
+cache_dir: .cache/embeddings
+top_k: 5
+
+generate: true
+judge: true
+generator:
+  provider: ollama
+  model: qwen2.5:3b
+judge_llm:
+  provider: ollama
+  model: qwen2.5:7b   # a bigger judge than generator reduces self-preference bias
+
+defaults:
+  chunking: {strategy: recursive, chunk_size: 200, overlap: 20}
+  embedding:
+    provider: ollama
+    model: nomic-embed-text
+    # nomic-embed-text was trained with task prefixes; try removing them and compare.
+    query_prefix: "search_query: "
+    document_prefix: "search_document: "
+  retrieval: {method: dense, rrf_k: 60, candidates: 20}
+  rerank: {enabled: false, candidates: 10}
+
+experiments:
+  - name: dense
+  - name: bm25
+    retrieval: {method: bm25}
+  - name: hybrid-rrf
+    retrieval: {method: hybrid}
+  - name: hybrid-rrf-rerank
+    retrieval: {method: hybrid}
+    rerank: {enabled: true, candidates: 10}

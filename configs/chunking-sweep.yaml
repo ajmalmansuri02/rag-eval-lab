@@ -1,0 +1,34 @@
+# How do chunking strategy and size affect retrieval? Retrieval method and embedding are fixed.
+# Tip: run with --retrieval-only first; it takes seconds once embeddings are cached.
+name: chunking-sweep
+top_k: 5
+generate: true
+judge: true
+generator: {provider: ollama, model: qwen2.5:3b}
+judge_llm: {provider: ollama, model: qwen2.5:7b}
+
+defaults:
+  embedding:
+    provider: ollama
+    model: nomic-embed-text
+    query_prefix: "search_query: "
+    document_prefix: "search_document: "
+  retrieval: {method: dense}
+
+experiments:
+  - name: fixed-50
+    chunking: {strategy: fixed, chunk_size: 50, overlap: 10}
+  - name: fixed-120
+    chunking: {strategy: fixed, chunk_size: 120, overlap: 20}
+  - name: fixed-300
+    chunking: {strategy: fixed, chunk_size: 300, overlap: 30}
+  - name: recursive-50
+    chunking: {strategy: recursive, chunk_size: 50, overlap: 10}
+  - name: recursive-120
+    chunking: {strategy: recursive, chunk_size: 120, overlap: 20}
+  - name: recursive-300
+    chunking: {strategy: recursive, chunk_size: 300, overlap: 30}
+  - name: recursive-120-no-overlap
+    chunking: {strategy: recursive, chunk_size: 120, overlap: 0}
+  - name: recursive-120-no-headings
+    chunking: {strategy: recursive, chunk_size: 120, overlap: 20, include_headings: false}

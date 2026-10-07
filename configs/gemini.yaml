@@ -1,0 +1,21 @@
+# Same as quick.yaml but using the Gemini API free tier for embeddings, generation and judging.
+# Requires GEMINI_API_KEY, GEMINI_MODEL and GEMINI_EMBED_MODEL in your environment or .env.
+# Free-tier quotas are small: keep GEMINI_REQUESTS_PER_MINUTE low and use --limit while exploring.
+name: gemini
+top_k: 5
+generate: true
+judge: true
+generator: {provider: gemini, model: ""}   # empty model = read GEMINI_MODEL
+judge_llm: {provider: gemini, model: ""}
+
+defaults:
+  chunking: {strategy: recursive, chunk_size: 200, overlap: 20}
+  embedding: {provider: gemini, model: ""}  # empty model = read GEMINI_EMBED_MODEL
+  retrieval: {method: dense}
+
+experiments:
+  - name: dense
+  - name: bm25
+    retrieval: {method: bm25}
+  - name: hybrid-rrf
+    retrieval: {method: hybrid}
