@@ -1,0 +1,208 @@
+# Golden question set for the Driftbox corpus.
+#
+# Each item:
+#   id               stable identifier
+#   question         what a user would ask
+#   expected_answer  the reference answer the judge compares against
+#   doc_ids          documents (file stems in data/corpus) that contain the answer.
+#                    An empty list means the corpus does NOT contain the answer; the ideal
+#                    response says so. Retrieval metrics skip these questions.
+#   tags             free-form labels for slicing results (single-doc, multi-doc, unanswerable...)
+
+- id: q01
+  question: What port does the Driftbox web UI listen on by default?
+  expected_answer: Port 8470 (the sync protocol uses 8471).
+  doc_ids: [overview]
+  tags: [single-doc, fact]
+
+- id: q02
+  question: How long is the first-time setup token valid?
+  expected_answer: 30 minutes. If it expires, restart the server to get a new one.
+  doc_ids: [installation]
+  tags: [single-doc, fact]
+
+- id: q03
+  question: How much RAM does the Driftbox server need?
+  expected_answer: At least 2 GB; 4 GB or more is recommended for more than 25 users.
+  doc_ids: [system-requirements]
+  tags: [single-doc, fact]
+
+- id: q04
+  question: Can I store vaults on an NFS share?
+  expected_answer: No. NFS and SMB network shares are not supported for vault storage because file locking over network filesystems is unreliable.
+  doc_ids: [system-requirements]
+  tags: [single-doc, negative]
+
+- id: q05
+  question: What does the Team plan cost if I pay month-to-month?
+  expected_answer: $7.50 per user per month (it is $6 per user per month when billed annually).
+  doc_ids: [pricing-plans]
+  tags: [single-doc, fact]
+
+- id: q06
+  question: How many users are allowed on the free plan?
+  expected_answer: The Community plan allows up to 5 users (and 3 vaults).
+  doc_ids: [pricing-plans]
+  tags: [single-doc, paraphrase]
+
+- id: q07
+  question: What happens when two devices edit the same file before syncing?
+  expected_answer: Driftbox keeps the version that arrived first and saves the other as a conflict copy named "filename (conflict from <device> YYYY-MM-DD).ext"; nothing is silently overwritten.
+  doc_ids: [sync-engine]
+  tags: [single-doc, procedure]
+
+- id: q08
+  question: How often do desktop clients run a full rescan?
+  expected_answer: Every 60 minutes by default, configurable with rescan_interval.
+  doc_ids: [sync-engine]
+  tags: [single-doc, fact]
+
+- id: q09
+  question: How long are daily snapshots kept under the standard retention policy?
+  expected_answer: 30 days.
+  doc_ids: [backup-retention]
+  tags: [single-doc, table]
+
+- id: q10
+  question: How long do deleted files stay in the trash on the Community plan?
+  expected_answer: 7 days (30 days on Team and Enterprise).
+  doc_ids: [backup-retention]
+  tags: [single-doc, fact]
+
+- id: q11
+  question: Which cipher is used to encrypt data at rest?
+  expected_answer: AES-256-GCM, with a separate key per vault.
+  doc_ids: [encryption-security]
+  tags: [single-doc, fact]
+
+- id: q12
+  question: What happens if I lose both my E2E passphrase and the recovery key?
+  expected_answer: The vault's data is unrecoverable; Quillfeather Labs cannot reset it.
+  doc_ids: [encryption-security]
+  tags: [single-doc, fact]
+
+- id: q13
+  question: When do public share links expire?
+  expected_answer: After 14 days by default; the maximum expiry is 365 days.
+  doc_ids: [sharing-permissions]
+  tags: [single-doc, fact]
+
+- id: q14
+  question: Which vault role lets someone upload files without seeing existing content?
+  expected_answer: The Uploader role.
+  doc_ids: [sharing-permissions]
+  tags: [single-doc, paraphrase]
+
+- id: q15
+  question: Which command checks configuration, ports, disk space and database health?
+  expected_answer: driftctl doctor
+  doc_ids: [cli-reference, troubleshooting]
+  tags: [multi-source, fact]
+
+- id: q16
+  question: What is the API rate limit per token?
+  expected_answer: 600 requests per minute per token, with bursts up to 100; exceeding it returns HTTP 429 with a Retry-After header.
+  doc_ids: [api-rate-limits]
+  tags: [single-doc, fact]
+
+- id: q17
+  question: What prefix do Driftbox personal access tokens start with?
+  expected_answer: dbx_pat_
+  doc_ids: [api-rate-limits]
+  tags: [single-doc, exact-string]
+
+- id: q18
+  question: How do I fix error DBX-1042?
+  expected_answer: It means the vault is locked by a stale lock; run "driftctl doctor --fix-locks" and do not delete lock files by hand.
+  doc_ids: [troubleshooting]
+  tags: [single-doc, exact-string]
+
+- id: q19
+  question: My Linux client with lots of files is stuck on Scanning. What should I do?
+  expected_answer: Increase the inotify watch limit, e.g. sudo sysctl fs.inotify.max_user_watches=524288.
+  doc_ids: [troubleshooting]
+  tags: [single-doc, procedure]
+
+- id: q20
+  question: Since which version are ARM64 server builds available?
+  expected_answer: Since version 3.0 (March 2024).
+  doc_ids: [release-notes, system-requirements]
+  tags: [multi-source, fact]
+
+- id: q21
+  question: When will API v1 be removed?
+  expected_answer: In version 4.0 (it was deprecated in 3.2).
+  doc_ids: [release-notes]
+  tags: [single-doc, fact]
+
+- id: q22
+  question: How can I verify that a webhook really came from Driftbox?
+  expected_answer: Webhooks are signed with HMAC-SHA256 and the signature is in the X-Driftbox-Signature header.
+  doc_ids: [integrations]
+  tags: [single-doc, paraphrase]
+
+- id: q23
+  question: How often are LDAP users and groups synchronized?
+  expected_answer: Every 4 hours.
+  doc_ids: [integrations]
+  tags: [single-doc, fact]
+
+- id: q24
+  question: How quickly does Enterprise support respond to a Severity 1 incident?
+  expected_answer: Within 4 hours, with 24/7 support.
+  doc_ids: [sla-support]
+  tags: [single-doc, fact]
+
+- id: q25
+  question: What service credit do I get if Driftbox Cloud uptime drops below 99.0% in a month?
+  expected_answer: 25% of the monthly fee.
+  doc_ids: [sla-support]
+  tags: [single-doc, table]
+
+- id: q26
+  question: In which regions is Driftbox Cloud available?
+  expected_answer: Frankfurt (eu-central) and Oregon (us-west).
+  doc_ids: [data-residency-compliance, overview]
+  tags: [multi-source, fact]
+
+- id: q27
+  question: Will Quillfeather sign a HIPAA Business Associate Agreement?
+  expected_answer: No. Driftbox Cloud is not HIPAA compliant and Quillfeather does not sign BAAs.
+  doc_ids: [data-residency-compliance]
+  tags: [single-doc, negative]
+
+- id: q28
+  question: What is the minimum iOS version for the mobile app?
+  expected_answer: iOS 16.
+  doc_ids: [mobile-apps]
+  tags: [single-doc, fact]
+
+- id: q29
+  question: Can a Team plan customer use SAML single sign-on?
+  expected_answer: No, SAML SSO is Enterprise only; Team customers can use LDAP directory sync instead.
+  doc_ids: [pricing-plans, integrations]
+  tags: [multi-doc, negative]
+
+- id: q30
+  question: Can I preview files from an E2E vault in the web UI, and can I open E2E vaults on my phone?
+  expected_answer: The web UI cannot preview (or search) files in an E2E vault, but the mobile apps support E2E vaults from app version 3.1.
+  doc_ids: [encryption-security, mobile-apps]
+  tags: [multi-doc]
+
+- id: q31
+  question: Is Driftbox open source?
+  expected_answer: The server is source-available under the Business Source License; the desktop and mobile clients are open source under Apache 2.0.
+  doc_ids: [faq]
+  tags: [single-doc, fact]
+
+- id: q32
+  question: How much does the Driftbox hardware appliance cost?
+  expected_answer: The documentation does not mention a hardware appliance or its price.
+  doc_ids: []
+  tags: [unanswerable]
+
+- id: q33
+  question: Who is the CEO of Quillfeather Labs?
+  expected_answer: The documentation does not say.
+  doc_ids: []
+  tags: [unanswerable]
